@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bensu Özel Ders Hesaplama</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("arkaplan.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+}
+.kutu {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 450px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+}
+label {
+    display: block;
+    margin-top: 12px;
+}
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    font-size: 15px;
+}
+button {
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+.btn-hesapla { background: #4CAF50; }
+.btn-ekle { background: #2196F3; }
+.btn-sifirla { background: #f44336; }
+
+.sonuc {
+    margin-top: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+.liste {
+    margin-top: 10px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="kutu">
+<h2>Özel Ders Ücret Hesaplama</h2>
+
+<label>Öğrenci:</label>
+<select id="ogrenci">
+    <option value="oznur_eng">Öznur ENG (8.75 TL/dk)</option>
+    <option value="oznur_it">Öznur Italian (10 TL/dk)</option>
+    <option value="sude">Sude (10 TL/dk)</option>
+    <option value="feyza">Feyza (10 TL/dk)</option>
+</select>
+
+<label>Ders Süresi (dk):</label>
+<input type="number" id="dakika" placeholder="Örn: 60">
+
+<button  type="button" class="btn-hesapla" onclick="tekDersHesapla()">Ücreti Hesapla</button>
+<button class="btn-ekle" onclick="listeyeEkle()">Listeye Ekle</button>
+<button class="btn-sifirla" onclick="listeyiSifirla()">Listeyi Sıfırla</button>
+
+<div class="sonuc" id="tekSonuc"></div>
+<div class="liste" id="liste"></div>
+<div class="sonuc" id="toplam"></div>
+
+</div>
+
+<script>
+const ogrenciler = {
+    oznur_eng: { ad: "Öznur ENG", ucret: 8.75 },
+    oznur_it: { ad: "Öznur Italian", ucret: 10 },
+    sude: { ad: "Sude", ucret: 10 },
+    feyza: { ad: "Feyza", ucret: 10 }
+};
+
+let dersler = [];
+let gunlukToplam = 0;
+
+function tekDersHesapla() {
+    const ogrenciKey = document.getElementById("ogrenci").value;
+    const dakika = Number(document.getElementById("dakika").value);
+
+    if (!dakika) {
+        alert("Ders süresini gir.");
+        return;
+    }
+
+    const tutar = dakika * ogrenciler[ogrenciKey].ucret;
+    document.getElementById("tekSonuc").innerText =
+        `Ders Ücreti: ${tutar.toFixed(2)} TL`;
+}
+
+function listeyeEkle() {
+    const ogrenciKey = document.getElementById("ogrenci").value;
+    const dakika = Number(document.getElementById("dakika").value);
+
+    if (!dakika) {
+        alert("Ders süresini gir.");
+        return;
+    }
+
+    const tutar = dakika * ogrenciler[ogrenciKey].ucret;
+    dersler.push({ ad: ogrenciler[ogrenciKey].ad, tutar });
+    gunlukToplam += tutar;
+
+    guncelleListe();
+}
+
+function guncelleListe() {
+    let html = "";
+    dersler.forEach((d, i) => {
+        html += `${i + 1}. ${d.ad} → ${d.tutar.toFixed(2)} TL<br>`;
+    });
+
+    document.getElementById("liste").innerHTML = html;
+    document.getElementById("toplam").innerText =
+        `Toplam Kazanç: ${gunlukToplam.toFixed(2)} TL`;
+}
+
+function listeyiSifirla() {
+    dersler = [];
+    gunlukToplam = 0;
+    document.getElementById("liste").innerHTML = "";
+    document.getElementById("toplam").innerText = "";
+    document.getElementById("tekSonuc").innerText = "";
+}
+</script>
+
+</body>
+</html>
